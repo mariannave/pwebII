@@ -33,25 +33,28 @@ public class ContatoController {
 	public Resultado deletar(String[] contatosIds) {
 		ContatoDAO dao = new ContatoDAO(PersistenceUtil.getCurrentEntityManager());
 		Resultado resultado = new Resultado();
+		this.mensagensErro = new ArrayList<String>();
 
-		resultado.setErro(false);
-		resultado.setMensagensErro(Collections.singletonList("Deleção feita com sucesso"));
-		
-		dao.beginTransaction();
-		for(String contatoId : contatosIds) {
-			System.out.println("O CONTATO>>>>>>>>>>>>> " + contatoId);
+		for (String contatoId : contatosIds) {
 			Contato contato = dao.find(Integer.parseInt(contatoId));
 			
 			if (contato == null) {
 				System.out.println("ERRO no ID: " + contatoId);
-				resultado.setErro(true);
-				resultado.setMensagensErro(Collections.singletonList("Erro ao deletar contato de ID: " + contatoId));
+				this.mensagensErro.add("Erro ao deletar contato de ID: " + contatoId);
+			} else {
+				dao.beginTransaction();
+				dao.delete(contato);
+				dao.commit();
 			}
-
-			dao.delete(contato);
 		}
-		
-		dao.commit();
+
+		if (this.mensagensErro.isEmpty()) {
+			resultado.setErro(false);
+			resultado.setMensagensErro(Collections.singletonList("Deleção feita com sucesso"));
+		} else {
+			resultado.setErro(true);
+			resultado.setMensagensErro(this.mensagensErro);
+		}
 
 		return resultado;
 		
@@ -60,7 +63,7 @@ public class ContatoController {
 	public Resultado cadastrar(Map<String, String[]> parametros) {
 		Resultado resultado = new Resultado();
 		
-		if(isParametrosValidos(parametros)) {
+		if (isParametrosValidos(parametros)) {
 			ContatoDAO dao = new ContatoDAO(PersistenceUtil.getCurrentEntityManager());
 			dao.beginTransaction();
 			
@@ -73,7 +76,6 @@ public class ContatoController {
 			dao.commit();
 			resultado.setErro(false);
 			resultado.setMensagensErro(Collections.singletonList("Contato criado com sucesso."));
-			
 		} else {
 			resultado.setEntitade(this.contato);
 			resultado.setErro(true);
@@ -129,9 +131,10 @@ public class ContatoController {
 			this.mensagensErro.add("Data de aniversário é campo obrigatório!");
 		} else {
 			if(dataAniv[0].matches("(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\\d{2,2}")) {
-				try { SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy");
+				try {
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 					sdf.setLenient(false);
-					Date dataIni= sdf.parse(dataAniv[0]);
+					Date dataIni = sdf.parse(dataAniv[0]);
 					contato.setDataAniversario(dataIni);
 				} catch(ParseException e) {
 					this.mensagensErro.add("Data inválida para a data de aniversário!");
@@ -140,13 +143,7 @@ public class ContatoController {
 				this.mensagensErro.add("Formato inválido para a data de aniversário (use dd/mm/aaaa)!");
 			}
 		}
-		
-		System.out.println("===========================");
-		System.out.println(this.contato.getId());
-		System.out.println(this.contato.getNome());
-		System.out.println(idOperadora);
-		System.out.println(this.mensagensErro.isEmpty());
-		System.out.println("===========================");
+
 		return this.mensagensErro.isEmpty();
 	}
 	
