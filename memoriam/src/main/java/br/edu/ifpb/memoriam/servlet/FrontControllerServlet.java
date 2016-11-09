@@ -63,6 +63,18 @@ public class FrontControllerServlet extends HttpServlet {
 			request.setAttribute("operadoras", operadoras);
 			proxPagina = "operadora/consulta.jsp";
 			break;
+			
+		case "edtoperadora":
+			int operadoraId = Integer.parseInt(request.getParameter("id"));
+			
+			if (operadoraId >= 0) {
+				Operadora operadora = operadoraCtrl.buscar(operadoraId);
+				request.setAttribute("operadora", operadora);
+				proxPagina = "operadora/cadastro.jsp";
+			} else {
+				proxPagina = "operadora/consulta.jsp";
+			}
+			break;
 		}
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher(proxPagina);
@@ -81,6 +93,7 @@ public class FrontControllerServlet extends HttpServlet {
 		}
 		
 		ContatoController contatoCtrl = new ContatoController();
+		OperadoraController operadoraCtrl = new OperadoraController();
 		
 		Resultado resultado = null;
 		String paginaSucesso = "controller.do?op=conctt";
@@ -112,10 +125,22 @@ public class FrontControllerServlet extends HttpServlet {
 
 			proxPagina = "controller.do?op=conctt";
 			break;
+		
+		case "operadoraCadastro":
+			resultado = operadoraCtrl.cadastrar(request.getParameterMap());
+
+			if (!resultado.isErro()) {
+				proxPagina = "controller.do?op=operadoras";
+				request.setAttribute("msgs", resultado.getMensagensErro());
+			} else {
+				request.setAttribute("operadora", (Operadora) resultado.getEntitade());
+				request.setAttribute("msgs", resultado.getMensagensErro());
+				proxPagina = "operadora/cadastro.jsp";
+			}
+			break;
 
 		default:
 			request.setAttribute("erro", "Operação não especificada no servlet");
-//			proxPagina = "../erro/erro.jsp";
 			proxPagina = "controller.do?op=conctt";
 		}
 		

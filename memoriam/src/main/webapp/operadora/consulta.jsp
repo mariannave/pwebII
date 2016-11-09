@@ -26,13 +26,15 @@
 			<h2>Memori<i class="glyphicon glyphicon-phone"></i>m</h2>
 			<table class="table">
 				<thead align="left">
-					<th></th>
-					<th>Nome</th>	
+					<th>Id</th>
+					<th>Nome</th>
+					<th>Prefixo</th>	
 				</thead>
 				<c:forEach var="operadora" items="${operadoras}">
 				<tr align="left">
 					<td>${operadora.id}</td>
-					<td><a href="controller.do?op=edtopp&id=${operadora.id}">${operadora.nome}</a></td>
+					<td><a href="controller.do?op=edtoperadora&id=${operadora.id}">${operadora.nome}</a></td>
+					<td>${operadora.prefixo}</td>
 				</tr>
 				</c:forEach>
 			</table>
