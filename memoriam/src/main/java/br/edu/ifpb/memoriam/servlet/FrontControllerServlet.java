@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import br.edu.ifpb.memoriam.entity.Contato;
+import br.edu.ifpb.memoriam.entity.Operadora;
 import br.edu.ifpb.memoriam.facade.ContatoController;
+import br.edu.ifpb.memoriam.facade.OperadoraController;
 import br.edu.ifpb.memoriam.facade.Resultado;
 
 @WebServlet("/controller.do")
@@ -25,6 +27,7 @@ public class FrontControllerServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ContatoController contatoCtrl = new ContatoController();
+		OperadoraController operadoraCtrl = new OperadoraController();
 		String proxPagina = null;
 		
 		this.getServletContext().removeAttribute("msgs");
@@ -53,6 +56,12 @@ public class FrontControllerServlet extends HttpServlet {
 			} else {
 				proxPagina = "contato/consulta.jsp";
 			}
+			break;
+
+		case "operadoras":
+			List<Operadora> operadoras = operadoraCtrl.consultar();
+			request.setAttribute("operadoras", operadoras);
+			proxPagina = "operadora/consulta.jsp";
 			break;
 		}
 		
