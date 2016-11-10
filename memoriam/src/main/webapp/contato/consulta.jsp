@@ -8,6 +8,8 @@
 	<title>Memoriam</title>
 	<link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<link href="${pageContext.request.contextPath}/css/memoriam.css" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	
 </head>
 <body>
 			<c:if test="${not empty msgs}">
@@ -28,7 +30,7 @@
 			<table class="table">
 				<thead align="left">
 					<th></th>
-					<th style="width: 30%">Nome</th>
+					<th style="width:30%">Nome</th>
 					<th>Telefone</th>
 					<th>Operadora</th>	
 				</thead>
@@ -36,17 +38,43 @@
 				
 				<c:forEach var="contato" items="${contatos}">
 				<tr align="left">
-					<td><input type="checkbox" name="delete" value="${contato.id}"/></td>
+					<td><input type="checkbox" name="delete" value="${contato.id}" class="selectOp"/></td>
 					<td><a href="controller.do?op=edtctt&id=${contato.id}">${contato.nome }</a></td>
 					<td>${contato.fone}</td>
 					<td>${contato.operadora.nome}</td>
 				</tr>
 				</c:forEach>
 			</table>
-			<button class="form-control btn btn-danger">Deletar</button>
+				<button id="botaoDeletar" class="form-control btn btn-danger hidden">Deletar</button>
 			</form>
 			<a href="contato/cadastro.jsp" class="form-control btn btn-primary">Novo</a>
 		</div>
 	</div>
+	<script>
+		$(document).ready(function() {
+				var enabled = false;
+				var checkboxes = $(".selectOp");
+				$(".selectOp").on("click", function(e) {
+					
+					if ($(this).is(":checked")) {
+						enabled = true;
+					} else {
+						enabled = false;
+					}
+					
+					if (enabled) {
+						$("#botaoDeletar").removeClass("hidden");
+					} else {
+						
+						for (var i = 0; i < checkboxes.length; i++) {
+							if (checkboxes[i].checked) {
+								return;
+							}
+						}
+						$("#botaoDeletar").addClass("hidden");
+					}
+				})
+			});
+	</script>
 </body>
 </html>
