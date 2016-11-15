@@ -1,2 +1,9 @@
 *.class
 memoriam/target/
+target/
+.metadata/
+.settings/
+RemoteSystemsTempFiles/
+doc/
+.recommenders/
+Servers/
