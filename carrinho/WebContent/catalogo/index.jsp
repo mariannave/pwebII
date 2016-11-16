@@ -24,7 +24,7 @@
 						<td>R$ ${produto.preco}</td>
 						<td><input type="hidden"  value="${produto.itemID}" name="id">
 							<button class="btn">Adicionar</button>
-						</td> 
+						</td>
 					</form>
 				</tr>
 			</c:forEach>
