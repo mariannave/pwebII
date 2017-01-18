@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import br.edu.ifpb.pweb.carrinho.model.Carrinho;
 import br.edu.ifpb.pweb.carrinho.model.Catalogo;
@@ -23,17 +24,29 @@ public class PedidoServlet extends HttpServlet {
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Catalogo catalogo = new Catalogo();
-		Item item = catalogo.getItem(request.getParameter("id"));
-		Carrinho carrinho = new Carrinho();
-		carrinho.adicioneItem(item.getItemID());
+		Carrinho carrinho;
+		HttpSession sessao = request.getSession();
+		Item item = Catalogo.getItem(request.getParameter("id"));
 		
+		if (!sessao.isNew() && sessao.getAttribute("carrinho") != null) {
+			carrinho = (Carrinho) sessao.getAttribute("carrinho");
+		} else {
+			carrinho = new Carrinho();
+			sessao.setAttribute("carrinho", carrinho);
+		}
+		
+		carrinho.adicioneItem(item.getItemID());	
 		List<ItemCarrinho> itens = carrinho.getItemsCarrinho();
 		request.setAttribute("itens", itens);
 		
+		// Atualizando a quantidade de itens no carrinho
+		if(request.getParameter("novaQtde")!= null) {
+			int qtdeNova = Integer.parseInt(request.getParameter("novaQtde"));
+			carrinho.setQtdeItens(item.getItemID(), qtdeNova);
+		}
 		
-		System.out.println(itens.get(0).getNumItens());
-
+		
+		
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/pedido/index.jsp");
 		dispatcher.forward(request, response);
 	}
