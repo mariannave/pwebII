@@ -21,8 +21,8 @@
 					<form class="form-control" method="POST">
 						<td>${produto.item.descricaoCurta}</td>
 						<td>${produto.numItens}</td>
-						<td><input type="number" name="novaQtde"></td>
-						<td><input type="hidden"  value="" name="id">
+						<td><input type="number" value="${produto.numItens}" placeholder=" " name="novaQtde"></td>
+						<td><input type="hidden"  value="${produto.item.itemID}" name="id">
 							<button class="btn">Atualizar quantidade</button>
 						</td> 
 					</form>
@@ -30,7 +30,7 @@
 			</c:forEach>
 		</table>
 		<button class="btn"><a href="catalogo">Voltar para o catálogo</a></button>
-		<button class="btn">Finalizar compra</button>
+		<button class="btn"><a href="resumo">Resumo da compra</a></button>
 	</div>
 </body>
 </html>
